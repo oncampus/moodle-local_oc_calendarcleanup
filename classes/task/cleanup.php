@@ -25,6 +25,8 @@
 
 namespace local_oc_calendarcleanup\task;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Cron task class
  *
@@ -65,6 +67,7 @@ class cleanup extends \core\task\scheduled_task {
      */
     private function delete_old_events() {
         global $DB, $CFG;
+        require_once($CFG->dirroot.'/calendar/lib.php');
 
         // Charge the setting for the retention period in days.
         $retentiondays = get_config('local_oc_calendarcleanup', 'retention_days');
@@ -76,10 +79,12 @@ class cleanup extends \core\task\scheduled_task {
 
         $events = $DB->get_records_select('event', 'timestart < ?', [$cutoff]);
 
-        mtrace('delete_old_events');
+        mtrace('Start delete_old_events task');
 
         if ($events) { // Check whether appointments were found at all.
             foreach ($events as $event) {
+                $mevent = \calendar_event::load($event->id);
+
                 // Check whether it is a repeated appointment.
                 if ($event->repeatid) {
 
@@ -93,18 +98,18 @@ class cleanup extends \core\task\scheduled_task {
                         // Shift timestart.
                         $event->timestart = $cutoff;
                         $event->timeduration = $newduration;
+                        $mevent->update($event);
                         mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-                        $DB->update_record('event', $event);
 
                         // Treatment of repeated appointment.
                     } else {
+                        $mevent->delete();
                         mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-                        $DB->delete_records('event', ['id' => $event->id]);
                     }
 
                 } else {
                     // Delete normal appointment.
-                    $DB->delete_records('event', ['id' => $event->id]);
+                    $mevent->delete();
                     mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                 }
             }
