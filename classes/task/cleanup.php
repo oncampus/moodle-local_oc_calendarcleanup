@@ -91,14 +91,15 @@ class cleanup extends \core\task\scheduled_task {
 
                     // If the event series has not yet ended.
                     if ((($timeend) > time()) || ($timeend > $cutoff)) {
-                        // Get new event duration.
-                        $newduration = $event->timeduration - ($cutoff - $event->timestart);
                         // Shift timestart.
-                        $event->timestart = $cutoff;
-                        $event->timeduration = $newduration;
-                        $mevent->update($event);
-                        mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-
+                        if ($event->timestart < $cutoff) {
+                            // Get new event duration.
+                            $newduration = $event->timeduration - ($cutoff - $event->timestart);
+                            $event->timestart = $cutoff;
+                            $event->timeduration = $newduration;
+                            $mevent->update($event);
+                            mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                        }
                         // Treatment of repeated appointment.
                     } else {
                         $mevent->delete();
