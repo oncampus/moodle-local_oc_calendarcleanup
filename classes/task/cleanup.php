@@ -25,8 +25,6 @@
 
 namespace local_oc_calendarcleanup\task;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Cron task class
  *
@@ -90,11 +88,11 @@ class cleanup extends \core\task\scheduled_task {
 
                     // Get end of event time.
                     $timeend = $event->timestart + $event->timeduration;
-                    // Get new event duration.
-                    $newduration = $event->timeduration - ($cutoff - $event->timestart);
 
                     // If the event series has not yet ended.
                     if ((($timeend) > time()) || ($timeend > $cutoff)) {
+                        // Get new event duration.
+                        $newduration = $event->timeduration - ($cutoff - $event->timestart);
                         // Shift timestart.
                         $event->timestart = $cutoff;
                         $event->timeduration = $newduration;
