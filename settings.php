@@ -34,7 +34,7 @@ $settings->add(new admin_setting_configtext(
     'local_oc_calendarcleanup/retention_days',
     get_string('retentiondays', 'local_oc_calendarcleanup'),
     get_string('retentiondays_desc', 'local_oc_calendarcleanup'),
-    365, // Standard: 1 Jahr.
+    365, // Standard: 1 year.
     PARAM_INT
 ));
 
