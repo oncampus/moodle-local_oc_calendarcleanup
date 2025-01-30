@@ -81,35 +81,39 @@ class cleanup extends \core\task\scheduled_task {
 
         if ($events) { // Check whether appointments were found at all.
             foreach ($events as $event) {
-                $mevent = \calendar_event::load($event->id);
+                try {
+                    $mevent = \calendar_event::load($event->id);
 
-                // Check whether it is a repeated appointment.
-                if ($event->repeatid) {
+                    // Check whether it is a repeated appointment.
+                    if ($event->repeatid) {
 
-                    // Get end of event time.
-                    $timeend = $event->timestart + $event->timeduration;
+                        // Get end of event time.
+                        $timeend = $event->timestart + $event->timeduration;
 
-                    // If the event series has not yet ended.
-                    if ((($timeend) > time()) || ($timeend > $cutoff)) {
-                        // Shift timestart.
-                        if ($event->timestart < $cutoff) {
-                            // Get new event duration.
-                            $newduration = $event->timeduration - ($cutoff - $event->timestart);
-                            $event->timestart = $cutoff;
-                            $event->timeduration = $newduration;
-                            $mevent->update($event);
-                            mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                        // If the event series has not yet ended.
+                        if ((($timeend) > time()) || ($timeend > $cutoff)) {
+                            // Shift timestart.
+                            if ($event->timestart < $cutoff) {
+                                // Get new event duration.
+                                $newduration = $event->timeduration - ($cutoff - $event->timestart);
+                                $event->timestart = $cutoff;
+                                $event->timeduration = $newduration;
+                                $mevent->update($event);
+                                mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                            }
+                            // Treatment of repeated appointment.
+                        } else {
+                            $mevent->delete();
+                            mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                         }
-                        // Treatment of repeated appointment.
+
                     } else {
+                        // Delete normal appointment.
                         $mevent->delete();
                         mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                     }
-
-                } else {
-                    // Delete normal appointment.
-                    $mevent->delete();
-                    mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                } catch (\Exception $e) {
+                    mtrace("Fehler bei Event-ID {$event->id}: " . $e->getMessage());
                 }
             }
         }
