@@ -15,17 +15,25 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * View components of occustom in admin tree
  *
  * @package     local_oc_calendarcleanup
- * @category    string
- * @copyright   2024 Yoko Rieger <yoko.rieger@oncampus.de>
+ * @copyright   2025 oncampus GmbH <support@oncampus.de>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'OC Kalender Aufräumarbeiten';
+if ($hassiteconfig) {
+    $settings = new admin_settingpage('local_oc_calendarcleanup', get_string('pluginname', 'local_oc_calendarcleanup'));
 
-$string['retentiondays'] = 'Kalendereinträge löschen wenn älter als: ';
-$string['retentiondays_desc'] = 'Gib ein nach wieviel Tagen Kalendereinträge gelöscht werden.';
+    $settings->add(new admin_setting_configtext(
+        'local_oc_calendarcleanup/retention_days',
+        get_string('retentiondays', 'local_oc_calendarcleanup'),
+        get_string('retentiondays_desc', 'local_oc_calendarcleanup'),
+        365, // Standard: 1 Jahr.
+        PARAM_INT
+    ));
+
+    $ADMIN->add('localplugins', $settings);
+}
