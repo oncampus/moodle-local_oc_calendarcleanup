@@ -98,22 +98,24 @@ class cleanup extends \core\task\scheduled_task {
                                 $newduration = $event->timeduration - ($cutoff - $event->timestart);
                                 $event->timestart = $cutoff;
                                 $event->timeduration = $newduration;
-                                $mevent->update($event);
-                                mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                                $repeats = $mevent->count_repeats();
+                                mtrace("\$repeats " . $repeats);
+                                //$mevent->update($event);
+                                //mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                             }
                             // Treatment of repeated appointment.
                         } else {
-                            $mevent->delete();
-                            mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                            //$mevent->delete();
+                            //mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                         }
 
                     } else {
                         // Delete normal appointment.
-                        $mevent->delete();
-                        mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                        //$mevent->delete();
+                        //mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                     }
                 } catch (\Exception $e) {
-                    mtrace("Fehler bei Event-ID {$event->id}: " . $e->getMessage());
+                    //mtrace("Fehler bei Event-ID {$event->id}: " . $e->getMessage());
                 }
             }
         }
