@@ -31,3 +31,5 @@ $string['retentiondays'] = 'Retentiondays';
 $string['retentiondays_desc'] = 'Enter how many days of calendar entries are deleted.';
 
 $string['oc_calendarcleanup:manage'] = 'Allows the management of calendar cleaning';
+
+$string['taskname'] = 'Deletes old calendar entries that are older than \'{$a->deletedate}\' days';
