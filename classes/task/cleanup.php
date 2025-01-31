@@ -88,5 +88,3 @@ class cleanup extends \core\task\scheduled_task {
         }
     }
 }
-
-
