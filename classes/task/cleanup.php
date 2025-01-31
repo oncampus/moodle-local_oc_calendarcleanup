@@ -68,44 +68,25 @@ class cleanup extends \core\task\scheduled_task {
             try {
                 $mevent = \calendar_event::load($event->id);
 
-                // Check whether it is a repeated appointment.
-                if ($event->repeatid) {
+                // Get end of event time.
+                $timeend = $event->timestart + $event->timeduration;
 
-                    // Get end of event time.
-                    $timeend = $event->timestart + $event->timeduration;
-
-                    // If the event series has not yet ended.
-                    if ((($timeend) > time()) || ($timeend > $cutoff)) {
-                        $repeats = $mevent->count_repeats();
-                        mtrace("\$repeats " . $repeats);
-                        // Shift timestart.
-                        if ($event->timestart < $cutoff) {
-                            // Get new event duration.
-                            $newduration = $event->timeduration - ($cutoff - $event->timestart);
-                            $event->timestart = $cutoff;
-                            $event->timeduration = $newduration;
-                            $repeats = count_repeats();
-                            mtrace("\$repeats " . $repeats);
-                            //$mevent->update($event);
-                            //mtrace('Update repeat Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-                        }
-                        // Treatment of repeated appointment.
-                    } else {
-                        //$mevent->delete();
-                        //mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-                    }
-
-                } else {
-                    // Delete normal appointment.
-                    //$mevent->delete();
-                    //mtrace('Event deleted Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                // Check if cutoff day is bigger than timeend.
+                if ($cutoff > $timeend) {
+                    $mevent->delete();
+                    mtrace('Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                 }
+
+            } catch (\dml_missing_record_exception $e) {
+                // Exception: Users do not exist or has been deleted.
+                mtrace("Fehler: Der Benutzer mit der ID $mevent->userid existiert nicht oder wurde gelöscht.", DEBUG_DEVELOPER);
+
             } catch (\Exception $e) {
-                //mtrace("Fehler bei Event-ID {$event->id}: " . $e->getMessage());
+                // General error treatment for unexpected errors.
+                mtrace("Datenbankfehler: " . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }
     }
-
 }
 
 
