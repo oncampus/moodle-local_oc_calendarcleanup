@@ -71,23 +71,36 @@ class cleanup extends \core\task\scheduled_task {
                 // Get end of event time.
                 $timeend = $event->timestart + $event->timeduration;
 
-                // Check if user exist.
-                $userexists = $DB->get_record('user', ['id' => $mevent->userid], 'id');
-
                 // Check if cutoff day is bigger than timeend.
-                if ($cutoff > $timeend && $userexists) {
-                    $mevent->delete();
-                    mtrace('Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
-                } else if ($cutoff > $timeend && !$userexists) {
-                    $DB->delete_records('event', ['id' => $event->id]);
-                    mtrace('User not found with ID: ' . $mevent->userid .
-                        ' Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                if ($cutoff > $timeend) {
+                    $this->delete_event($mevent, $DB, $event);
                 }
-
             } catch (\Exception $e) {
                 // General error treatment for unexpected errors.
                 mtrace("Datenbankfehler: " . $e->getMessage(), DEBUG_DEVELOPER);
             }
+        }
+    }
+
+    /**
+     * Delete old events
+     *
+     * @param $mevent
+     * @param $DB
+     * @param $event
+     * @return void
+     */
+    private function delete_event($mevent, $DB, $event): void {
+        // Check if user exist.
+        $userexists = $DB->get_record('user', ['id' => $mevent->userid], 'id');
+
+        if ($userexists) {
+            $mevent->delete();
+            mtrace('Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+        } else {
+            $DB->delete_records('event', ['id' => $event->id]);
+            mtrace('User not found with ID: ' . $mevent->userid .
+                ' Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
         }
     }
 }
