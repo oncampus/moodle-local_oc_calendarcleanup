@@ -32,4 +32,4 @@ $string['retentiondays_desc'] = 'Gib ein nach wieviel Tagen Kalendereinträge ge
 
 $string['oc_calendarcleanup:manage'] = 'Erlaubt das Verwalten der Kalenderbereinigung';
 
-$string['taskname'] = 'Löscht alte Kalendereinträge, die älter sind als {$a->deletedate} Tage';
+$string['taskname'] = 'Löscht alte Kalendereinträge';

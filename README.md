@@ -1,8 +1,9 @@
 # OC Calendarcleanup #
 
-TODO Describe the plugin shortly here.
+Pluginname: Local_oc_calendarcleanup
+The plugin is a cronjob that checks the calendar according to old entries and deletes old calendar entries.
+The cronjob runs once a day.
 
-TODO Provide more detailed description here.
 
 ## Installing via uploaded ZIP file ##
 
@@ -26,6 +27,10 @@ Alternatively, you can run
     $ php admin/cli/upgrade.php
 
 to complete the installation from the command line.
+
+## Presets
+
+- The deletion date can be entered under /admin/settings.php?section=local_oc_calendarcleanup.
 
 ## License ##
 

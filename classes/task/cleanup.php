@@ -42,7 +42,7 @@ class cleanup extends \core\task\scheduled_task {
      */
     public function get_name() {
         $retentiondays = get_config('local_oc_calendarcleanup', 'retention_days');
-        return get_string('taskname', 'local_oc_calendarcleanup', ['deletedate' => $retentiondays]);
+        return get_string('taskname', 'local_oc_calendarcleanup');
     }
 
     /**
