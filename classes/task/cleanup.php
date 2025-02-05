@@ -81,7 +81,7 @@ class cleanup extends \core\task\scheduled_task {
                 } else if ($cutoff > $timeend && !$userexists) {
                     $DB->delete_records('event', ['id' => $event->id]);
                     mtrace('User not found with ID: ' . $mevent->userid .
-                        'Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+                        ' Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                 }
 
             } catch (\Exception $e) {
