@@ -71,15 +71,14 @@ class cleanup extends \core\task\scheduled_task {
                 // Get end of event time.
                 $timeend = $event->timestart + $event->timeduration;
 
+                // Check if user exist.
+                $userexists = $DB->get_record('user', ['id' => $mevent->userid], 'id');
+
                 // Check if cutoff day is bigger than timeend.
-                if ($cutoff > $timeend) {
+                if ($cutoff > $timeend && $userexists) {
                     $mevent->delete();
                     mtrace('Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
                 }
-
-            } catch (\dml_missing_record_exception $e) {
-                // Exception: Users do not exist or has been deleted.
-                mtrace("Fehler: Der Benutzer mit der ID $mevent->userid existiert nicht oder wurde gelöscht.", DEBUG_DEVELOPER);
 
             } catch (\Exception $e) {
                 // General error treatment for unexpected errors.
