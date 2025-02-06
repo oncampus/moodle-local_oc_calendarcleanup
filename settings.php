@@ -24,18 +24,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if (!has_capability('local/oc_calendarcleanup:manage', context_system::instance())) {
-    throw new moodle_exception('accessdenied', 'admin');
+if ($hassiteconfig) {
+    $settings = new admin_settingpage('local_oc_calendarcleanup', get_string('pluginname', 'local_oc_calendarcleanup'));
+
+    $settings->add(new admin_setting_configtext(
+        'local_oc_calendarcleanup/retention_days',
+        get_string('retentiondays', 'local_oc_calendarcleanup'),
+        get_string('retentiondays_desc', 'local_oc_calendarcleanup'),
+        365, // Standard: 1 year.
+        PARAM_INT
+    ));
+
+    $ADMIN->add('localplugins', $settings);
 }
-
-$settings = new admin_settingpage('local_oc_calendarcleanup', get_string('pluginname', 'local_oc_calendarcleanup'));
-
-$settings->add(new admin_setting_configtext(
-    'local_oc_calendarcleanup/retention_days',
-    get_string('retentiondays', 'local_oc_calendarcleanup'),
-    get_string('retentiondays_desc', 'local_oc_calendarcleanup'),
-    365, // Standard: 1 year.
-    PARAM_INT
-));
-
-$ADMIN->add('localplugins', $settings);
