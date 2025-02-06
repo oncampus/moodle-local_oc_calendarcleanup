@@ -17,8 +17,8 @@ The cronjob runs for a predefined time.
 
 - Only the admin can change the settings
 - The deletion date can be entered under /admin/settings.php?section=local_oc_calendarcleanup
-- The admin can immediately toast the cronjob via planned task
-- The admin can check the logs via planned task
+- The admin can immediately toast the cronjob via Scheduled tasks
+- The admin can check the logs via Scheduled tasks
 
 ## Installing via uploaded ZIP file ##
 
