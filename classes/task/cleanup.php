@@ -66,14 +66,12 @@ class cleanup extends \core\task\scheduled_task {
 
         foreach ($events as $event) {
             try {
-                $mevent = \calendar_event::load($event->id);
-
                 // Get end of event time.
                 $timeend = $event->timestart + $event->timeduration;
 
                 // Check if cutoff day is bigger than timeend.
                 if ($cutoff > $timeend) {
-                    $this->delete_event($mevent, $DB, $event);
+                    $this->delete_event($DB, $event);
                 }
             } catch (\Exception $e) {
                 // General error treatment for unexpected errors.
@@ -90,7 +88,10 @@ class cleanup extends \core\task\scheduled_task {
      * @param $event
      * @return void
      */
-    private function delete_event($mevent, $DB, $event): void {
+    private function delete_event($DB, $event): void {
+
+        $mevent = \calendar_event::load($event->id);
+
         // Check if user exist.
         $userexists = $DB->get_record('user', ['id' => $mevent->userid], 'id');
 
