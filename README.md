@@ -1,8 +1,24 @@
 # OC Calendarcleanup #
 
-TODO Describe the plugin shortly here.
+Pluginname: Local_oc_calendarcleanup
+Moodle has no function to clean up the calendar of old entries. 
+Since the calendar quickly becomes full, this can affect Moodle's performance.
+The plugin is a cronjob that checks the calendar according to old entries and deletes old calendar entries.
+The cronjob runs for a predefined time. 
 
-TODO Provide more detailed description here.
+## Overview
+
+- Old calendar entries are deleted in the background
+- The frequency of how often the cronjob should run can be set in the site administrate /admin/settings.php?section=local_oc_calendarcleanup
+- Check every calendar entry
+- Check whether the user exists
+
+### Admin view
+
+- Only the admin can change the settings
+- The deletion date can be entered under /admin/settings.php?section=local_oc_calendarcleanup
+- The admin can immediately toast the cronjob via Scheduled tasks
+- The admin can check the logs via Scheduled tasks
 
 ## Installing via uploaded ZIP file ##
 
@@ -26,6 +42,15 @@ Alternatively, you can run
     $ php admin/cli/upgrade.php
 
 to complete the installation from the command line.
+
+## Support
+
+- Yoko Rieger
+
+## Authors and acknowledgment
+
+- Yoko Rieger
+
 
 ## License ##
 
