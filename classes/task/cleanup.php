@@ -34,7 +34,6 @@ namespace local_oc_calendarcleanup\task;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cleanup extends \core\task\scheduled_task {
-
     /**
      * Return the task's name as shown in admin screens.
      *
