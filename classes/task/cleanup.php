@@ -17,7 +17,6 @@
 /**
  * Cron task for calendarcleanup
  *
- * @package     local
  * @package     local_oc_calendarcleanup
  * @copyright   2025 oncampus GmbH <support@oncampus.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
