@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['oc_calendarcleanup:manage'] = 'Allows the management of calendar cleaning';
 $string['pluginname'] = 'OC Calendarcleanup';
+$string['privacy:metadata'] = "This plugin only cleans up old calendar entries and does not save any data.";
 
 $string['retentiondays'] = 'Retentiondays';
 $string['retentiondays_desc'] = 'Enter how many days of calendar entries are deleted.';
