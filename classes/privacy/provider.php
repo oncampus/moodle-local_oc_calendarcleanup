@@ -15,22 +15,25 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Cron task for calendarcleanup
  *
  * @package     local_oc_calendarcleanup
- * @category    string
- * @copyright   2024 Yoko Rieger <yoko.rieger@oncampus.de>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright   2025 oncampus GmbH <support@oncampus.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_oc_calendarcleanup\privacy;
 
-$string['oc_calendarcleanup:manage'] = 'Erlaubt das Verwalten der Kalenderbereinigung';
-$string['pluginname'] = 'OC Kalender Aufräumarbeiten';
-$string['privacy:metadata'] = "Dieses Plugin räumt nur veraltete Kalendereinträge auf und speichert keine Daten.";
+use core_privacy\local\metadata\null_provider;
 
-$string['retentiondays'] = 'Kalendereinträge löschen wenn älter als: ';
-$string['retentiondays_desc'] = 'Gib ein nach wieviel Tagen Kalendereinträge gelöscht werden.';
-
-
-$string['taskname'] = 'Löscht alte Kalendereinträge';
+/**
+ * The provider class for the plugin. This plugin does not store any personal user data.
+ */
+class provider implements null_provider {
+    /**
+     * This method explains why the plugin does not store data.
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
+}
