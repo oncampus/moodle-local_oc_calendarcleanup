@@ -1,4 +1,4 @@
-# OC Calendarcleanup #
+# Calendarcleanup #
 
 Moodle does not automatically clean up old calendar entries. Since the calendar quickly becomes full,
 this can affect Moodle's performance, especially since the calendar block is widely used.

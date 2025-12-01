@@ -24,6 +24,9 @@
 
 namespace local_oc_calendarcleanup\task;
 
+use coding_exception;
+use dml_exception;
+
 /**
  * Cron task class
  *
@@ -37,16 +40,18 @@ class cleanup extends \core\task\scheduled_task {
      * Return the task's name as shown in admin screens.
      *
      * @return string
+     * @throws coding_exception
      */
-    public function get_name() {
-        $retentiondays = get_config('local_oc_calendarcleanup', 'retention_days');
+    public function get_name(): string {
         return get_string('taskname', 'local_oc_calendarcleanup');
     }
 
     /**
      * Execute the task.
+     *
+     * @throws dml_exception
      */
-    public function execute() {
+    public function execute(): void {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/calendar/lib.php');
 
@@ -73,7 +78,7 @@ class cleanup extends \core\task\scheduled_task {
                 }
             } catch (\Exception $e) {
                 // General error treatment for unexpected errors.
-                mtrace("Datenbankfehler: " . $e->getMessage(), DEBUG_DEVELOPER);
+                mtrace("Database error: " . $e->getMessage());
             }
         }
     }
@@ -81,7 +86,6 @@ class cleanup extends \core\task\scheduled_task {
     /**
      * Delete old events
      *
-     * @param $mevent
      * @param $DB
      * @param $event
      * @return void
