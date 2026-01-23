@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_oc_calendarcleanup';
 $plugin->release = '4.5.1';
-$plugin->version = 2025120100;
+$plugin->version = 2026012300;
 $plugin->requires = 2024100707;
 $plugin->maturity = MATURITY_STABLE;

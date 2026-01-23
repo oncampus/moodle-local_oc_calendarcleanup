@@ -14,18 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Cron task for calendarcleanup
- *
- * @package     local_oc_calendarcleanup
- * @copyright   2025 oncampus GmbH <support@oncampus.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_oc_calendarcleanup\task;
 
+use calendar_event;
 use coding_exception;
+use core\clock;
+use core\di;
+use core\task\scheduled_task;
 use dml_exception;
+use Exception;
+use moodle_database;
+use stdClass;
+
+defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/calendar/lib.php');
 
 /**
  * Cron task class
@@ -35,7 +37,17 @@ use dml_exception;
  * @copyright   2025 oncampus GmbH <support@oncampus.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cleanup extends \core\task\scheduled_task {
+class cleanup extends scheduled_task {
+    /** @var moodle_database Database */
+    private moodle_database $db;
+
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->db = di::get(moodle_database::class);
+    }
+
     /**
      * Return the task's name as shown in admin screens.
      *
@@ -52,31 +64,21 @@ class cleanup extends \core\task\scheduled_task {
      * @throws dml_exception
      */
     public function execute(): void {
-        global $DB, $CFG;
-        require_once($CFG->dirroot . '/calendar/lib.php');
-
         // Charge the setting for the retention period in days.
-        $retentiondays = get_config('local_oc_calendarcleanup', 'retention_days');
+        $timeperiod = get_config('local_oc_calendarcleanup', 'retention_days');
+        $cutoff = di::get(clock::class)->time() - $timeperiod;
 
-        // Conversion of the days in seconds.
-        $timeperiod = $retentiondays * 24 * 60 * 60; // Days * hours * minutes * seconds.
-
-        $cutoff = time() - $timeperiod;
-
-        $events = $DB->get_records_select('event', 'timestart < ?', [$cutoff]);
-
+        $events = $this->db->get_records_select('event', 'timestart < ?', [$cutoff], fields: 'id, name');
         mtrace('Start delete_old_events task');
-
         foreach ($events as $event) {
-            try {
-                // Get end of event time.
-                $timeend = $event->timestart + $event->timeduration;
+            $timeend = $event->timestart + $event->timeduration;
+            if ($cutoff <= $timeend) {
+                continue;
+            }
 
-                // Check if cutoff day is bigger than timeend.
-                if ($cutoff > $timeend) {
-                    $this->delete_event($DB, $event);
-                }
-            } catch (\Exception $e) {
+            try {
+                $this->delete_event($event->id, $event->name);
+            } catch (dml_exception $e) {
                 // General error treatment for unexpected errors.
                 mtrace("Database error: " . $e->getMessage());
             }
@@ -84,26 +86,24 @@ class cleanup extends \core\task\scheduled_task {
     }
 
     /**
-     * Delete old events
+     * Delete the calendar event with the given id
      *
-     * @param $DB
-     * @param $event
+     * @param int $eventid ID of the event
+     * @param string $eventname Name of the event
      * @return void
+     * @throws dml_exception
      */
-    private function delete_event($DB, $event): void {
-
-        $mevent = \calendar_event::load($event->id);
-
-        // Check if user exist.
-        $userexists = $DB->get_record('user', ['id' => $mevent->userid], 'id');
+    private function delete_event(int $eventid, string $eventname): void {
+        $mevent = calendar_event::load($eventid);
+        $userexists = $this->db->record_exists('user', ['id' => $mevent->userid]);
 
         if ($userexists) {
             $mevent->delete();
-            mtrace('Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+            mtrace("Event deleted: Event name ($eventname) and Event ID ($eventid)");
         } else {
-            $DB->delete_records('event', ['id' => $event->id]);
-            mtrace('User not found with ID: ' . $mevent->userid .
-                ' Event deleted: Event name (' . $event->name . ') and Event ID (' . $event->id . ')');
+            $this->db->delete_records('event', ['id' => $eventid]);
+            mtrace("User not found with ID: $mevent->userid" .
+                " Event deleted: Event name ($eventname) and Event ID ($eventid)");
         }
     }
 }
