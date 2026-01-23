@@ -22,11 +22,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_oc_calendarcleanup\task\cleanup;
+
 defined('MOODLE_INTERNAL') || die();
 
 $tasks = [
     [
-        'classname' => 'local_oc_calendarcleanup\task\cleanup',
+        'classname' => cleanup::class,
         'blocking' => 0,
         'minute' => 'R',
         'hour' => '3',

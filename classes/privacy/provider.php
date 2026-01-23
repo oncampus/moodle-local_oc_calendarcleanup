@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Cron task for calendarcleanup
- *
- * @package     local_oc_calendarcleanup
- * @copyright   2025 oncampus GmbH <support@oncampus.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_oc_calendarcleanup\privacy;
 
 use core_privacy\local\metadata\null_provider;
 
 /**
  * The provider class for the plugin. This plugin does not store any personal user data.
+ *
+ * @package     local_oc_calendarcleanup
+ * @copyright   2025 oncampus GmbH <support@oncampus.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements null_provider {
     /**

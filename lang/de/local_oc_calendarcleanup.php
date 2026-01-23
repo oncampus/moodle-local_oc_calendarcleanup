@@ -25,12 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['oc_calendarcleanup:manage'] = 'Erlaubt das Verwalten der Kalenderbereinigung';
 $string['pluginname'] = 'OC Kalender Aufräumarbeiten';
 $string['privacy:metadata'] = "Dieses Plugin räumt nur veraltete Kalendereinträge auf und speichert keine Daten.";
 
 $string['retentiondays'] = 'Kalendereinträge löschen wenn älter als: ';
 $string['retentiondays_desc'] = 'Gib ein nach wieviel Tagen Kalendereinträge gelöscht werden.';
-
 
 $string['taskname'] = 'Löscht alte Kalendereinträge';
